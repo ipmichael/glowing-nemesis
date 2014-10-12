@@ -519,7 +519,7 @@ function main()
 				[
 					new Agent
 					(
-						null, // name
+						"Waka", // name
 						agentDefns["Ogre"].name,
 						new Coords(90, 20),
 						null, // itemsEquipped
