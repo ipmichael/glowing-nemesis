@@ -1,0 +1,2562 @@
+<html>
+<body>
+
+<script type="text/javascript">
+
+// main
+
+function main()
+{
+	//localStorage.clear(); 
+
+	var viewSize = new Coords(200, 150);
+
+	var universe0 = Universe.new(null);
+
+	Globals.prototype.initialize
+	(
+		"Cursor Quest",
+		50, // millisecondsPerTimerTick
+		viewSize,
+		universe0,
+		// sounds
+		[
+			new Sound("Click", "Click.wav"),
+			new Sound("Music", "Music.mp3"),
+		],
+		// videos
+		[
+			new Video("Intro", "Intro.webm"),
+		]
+	);
+}
+
+// extensions
+
+Array.prototype.addLookups = function(keyName)
+{
+	for (var i = 0; i < this.length; i++)
+	{
+		var item = this[i];
+		var key = item[keyName];
+		this[key] = item;
+	}
+}
+
+// classes
+
+function ControlBuilder()
+{}
+{
+	ControlBuilder.configure = function()
+	{
+		return new ControlContainer
+		(
+			"containerConfigure",
+			new Coords(0, 0), // pos
+			new Coords(200, 150), // size
+			// children
+			[
+				new ControlButton
+				(
+					"buttonSave",
+					new Coords(50, 15), // pos
+					new Coords(100, 25), // size
+					"Save",
+					// click
+					function ()
+					{
+						var universe = Globals.Instance.universe;
+						var profile = universe.profile;
+						var world = universe.world;
+
+						world.dateSaved = DateTime.now();
+
+						Globals.Instance.profileHelper.profileSave
+						(
+							profile
+						);
+
+						var venueNext = new VenueWorld(world);
+						venueNext = new VenueFader(venueNext);
+						universe.venueNext = venueNext;
+					}
+				),
+
+				new ControlLabel
+				(
+					"labelMusicVolume",
+					new Coords(50, 45), // pos
+					new Coords(75, 25), // size
+					false, // isTextCentered
+					"Music Volume:"
+				),
+
+				new ControlSelect
+				(
+					"selectMusicVolume",
+					new Coords(125, 45), // pos
+					new Coords(25, 25), // size
+
+					// dataBindingForValueSelected
+					new DataBinding
+					(
+						Globals.Instance.soundHelper, 
+						"musicVolume"
+					),
+
+					// dataBindingForOptions
+					new DataBinding
+					(
+						SoundHelper.controlSelectOptionsVolume(),
+						null
+					),
+
+					"value", // bindingExpressionForOptionValues,
+					"text" // bindingExpressionForOptionText
+				),
+
+				new ControlLabel
+				(
+					"labelSoundVolume",
+					new Coords(50, 75), // pos
+					new Coords(75, 25), // size
+					false, // isTextCentered
+					"Sound Volume:"
+				),
+
+				new ControlSelect
+				(
+					"selectSoundVolume",
+					new Coords(125, 75), // pos
+					new Coords(25, 25), // size
+
+					// dataBindingForValueSelected
+					new DataBinding
+					(
+						Globals.Instance.soundHelper, 
+						"soundVolume"
+					),
+
+					// dataBindingForOptions
+					new DataBinding
+					(
+						SoundHelper.controlSelectOptionsVolume(),
+						null
+					),
+
+					"value", // bindingExpressionForOptionValues,
+					"text" // bindingExpressionForOptionText
+				),
+
+				new ControlButton
+				(
+					"buttonReturn",
+					new Coords(50, 105), // pos
+					new Coords(45, 25), // size
+					"Return",
+					// click
+					function()
+					{
+						var universe = Globals.Instance.universe;
+						var world = universe.world;
+						var venueNext = new VenueWorld(world);
+						venueNext = new VenueFader(venueNext);
+						universe.venueNext = venueNext;
+					}
+				),
+	
+				new ControlButton
+				(
+					"buttonQuit",
+					new Coords(105, 105), // pos
+					new Coords(45, 25), // size
+					"Quit",
+					// click
+					function()
+					{
+						Globals.Instance.reset();
+						var universe = Globals.Instance.universe;
+						var venueNext = new VenueControls
+						(
+							ControlBuilder.title()
+						);
+						venueNext = new VenueFader(venueNext);
+						universe.venueNext = venueNext;
+					}
+				),
+			]
+		);
+	}
+
+	ControlBuilder.confirm = function(message, confirm, cancel)
+	{
+		var returnValue = new ControlContainer
+		(
+			"containerConfirm",
+			new Coords(0, 0), // pos
+			new Coords(200, 150), // size
+			// children
+			[
+				new ControlLabel
+				(
+					"labelMessage",
+					new Coords(50, 50), // pos
+					new Coords(100, 25), // size
+					true, // isTextCentered
+					message
+				),
+
+				new ControlButton
+				(
+					"buttonConfirm",
+					new Coords(50, 100), // pos
+					new Coords(45, 25), // size
+					"Confirm",
+					confirm
+				),
+
+				new ControlButton
+				(
+					"buttonCancel",
+					new Coords(100, 100), // pos
+					new Coords(45, 25), // size
+					"Cancel",
+					cancel
+				),
+			]
+		);
+
+		return returnValue;
+	}
+
+
+	ControlBuilder.profileDetail = function()
+	{
+		var returnValue = new ControlContainer
+		(
+			"containerProfileDetail",
+			new Coords(0, 0), // pos
+			new Coords(200, 150), // size
+			// children
+			[
+				new ControlLabel
+				(
+					"labelProfileName",
+					new Coords(50, 25), // pos
+					new Coords(100, 25), // size
+					true, // isTextCentered
+					Globals.Instance.universe.profile.name
+				),
+
+				new ControlList
+				(
+					"listWorlds",
+					new Coords(25, 50), // pos
+					new Coords(150, 50), // size
+					new DataBinding
+					(
+						Globals.Instance.universe.profile.worlds,
+						null
+					),
+					"name"
+				),
+
+				new ControlButton
+				(
+					"buttonBack",
+					new Coords(10, 10), // pos
+					new Coords(15, 15), // size
+					"<",
+					// click
+					function ()
+					{
+						var venueNext = new VenueControls
+						(
+							ControlBuilder.profileSelect()
+						);
+						venueNext = new VenueFader(venueNext);
+						var universe = Globals.Instance.universe;
+						universe.venueNext = venueNext;
+					}
+				),
+	
+				new ControlButton
+				(
+					"buttonNew",
+					new Coords(50, 110), // pos
+					new Coords(45, 25), // size
+					"New",
+					// click
+					function ()
+					{
+						var world = World.new();
+
+						var universe = Globals.Instance.universe;
+						var profile = universe.profile;
+						profile.worlds.push(world);
+
+						Globals.Instance.profileHelper.profileSave
+						(
+							profile
+						);				
+
+						universe.world = world;
+						var venueNext = new VenueControls
+						(
+							ControlBuilder.worldDetail()
+						);
+						venueNext = new VenueVideo
+						(
+							"Intro", // videoName
+							venueNext
+						);
+						venueNext = new VenueFader(venueNext);
+						universe.venueNext = venueNext;
+					}
+				),
+
+				new ControlButton
+				(
+					"buttonSelect",
+					new Coords(105, 110), // pos
+					new Coords(45, 25), // size
+					"Select",
+					// click
+					function ()
+					{
+						var listWorlds = this.parent.children["listWorlds"];
+						var worldSelected = listWorlds.itemSelected();
+						if (worldSelected != null)
+						{
+							var universe = Globals.Instance.universe;
+							universe.world = worldSelected;
+							var venueNext = new VenueControls
+							(
+								ControlBuilder.worldDetail()
+							);
+							venueNext = new VenueFader(venueNext);
+							universe.venueNext = venueNext;
+						}
+					}
+				),	
+
+				new ControlButton
+				(
+					"buttonDelete",
+					new Coords(180, 10), // pos
+					new Coords(15, 15), // size
+					"x",
+					// click
+					function ()
+					{
+						var universe = Globals.Instance.universe;
+						var profile = universe.profile;
+
+						var controlConfirm = ControlBuilder.confirm
+						(
+							"Delete Profile \"" 
+								+ profile.name 
+								+ "\"?",
+							// confirm
+							function()
+							{
+								var universe = Globals.Instance.universe;
+								var profile = universe.profile;
+								Globals.Instance.profileHelper.profileDelete
+								(
+									profile
+								);
+
+								var venueNext = new VenueControls
+								(
+									ControlBuilder.profileSelect()
+								);
+								venueNext = new VenueFader(venueNext);
+								universe.venueNext = venueNext;
+							},
+							// cancel
+							function()
+							{
+								var venueNext = new VenueControls
+								(
+									ControlBuilder.profileDetail()
+								);
+								venueNext = new VenueFader(venueNext);
+								var universe = Globals.Instance.universe;
+								universe.venueNext = venueNext;
+							}						
+						);
+
+						var venueNext = new VenueControls(controlConfirm);
+						venueNext = new VenueFader(venueNext);
+						universe.venueNext = venueNext;
+					}
+				),
+			]
+		);
+
+		return returnValue;
+	}
+
+	ControlBuilder.profileNew = function()
+	{
+		return new ControlContainer
+		(
+			"containerProfileNew",
+			new Coords(0, 0), // pos
+			new Coords(200, 150), // size
+			// children
+			[
+				new ControlLabel
+				(
+					"labelName",
+					new Coords(50, 25), // pos
+					new Coords(100, 25), // size
+					true, // isTextCentered
+					"Name:"
+				),
+
+				new ControlTextBox
+				(
+					"textBoxName",
+					new Coords(50, 50), // pos
+					new Coords(100, 25), // size
+					""
+				),
+
+				new ControlButton
+				(
+					"buttonCreate",
+					new Coords(50, 80), // pos
+					new Coords(45, 25), // size
+					"Create",
+					// click
+					function ()
+					{
+						var textBoxName = this.parent.children["textBoxName"];
+						var profileName = textBoxName.text;
+						if (profileName == "")
+						{
+							return;
+						}
+
+						var profile = new Profile(profileName, []);
+						Globals.Instance.profileHelper.profileAdd
+						(
+							profile
+						);
+
+						var universe = Globals.Instance.universe;
+						universe.profile = profile;
+						var venueNext = new VenueControls
+						(
+							ControlBuilder.profileDetail()
+						);
+						venueNext = new VenueFader(venueNext);
+						universe.venueNext = venueNext;
+					}
+				),
+
+				new ControlButton
+				(
+					"buttonCancel",
+					new Coords(105, 80), // pos
+					new Coords(45, 25), // size
+					"Cancel",
+					// click
+					function ()
+					{
+						var universe = Globals.Instance.universe;
+						var venueNext = new VenueControls
+						(
+							ControlBuilder.profileSelect()
+						);
+						venueNext = new VenueFader(venueNext);
+						universe.venueNext = venueNext;
+					}
+				),
+			]
+		);
+	}
+
+	ControlBuilder.profileSelect = function()
+	{
+		var profiles = Globals.Instance.profileHelper.profiles();
+		
+		var returnValue = new ControlContainer
+		(
+			"containerProfileSelect",
+			new Coords(0, 0), // pos
+			new Coords(200, 150), // size
+			// children
+			[
+				new ControlLabel
+				(
+					"labelSelectAProfile",
+					new Coords(50, 25), // pos
+					new Coords(100, 25), // size
+					true, // isTextCentered
+					"Select a Profile:"
+				),
+
+				new ControlList
+				(
+					"listProfiles",
+					new Coords(50, 55), // pos
+					new Coords(100, 50), // size
+					new DataBinding
+					(
+						profiles,
+						null
+					),
+					"name"
+				),
+
+				new ControlButton
+				(
+					"buttonNew",
+					new Coords(50, 110), // pos
+					new Coords(45, 25), // size
+					"New",
+					// click
+					function ()
+					{
+						var universe = Globals.Instance.universe;
+						var venueNext = new VenueControls
+						(
+							ControlBuilder.profileNew()
+						);
+						venueNext = new VenueFader(venueNext);
+						universe.venueNext = venueNext;
+					}
+				),
+
+
+				new ControlButton
+				(
+					"buttonSelect",
+					new Coords(105, 110), // pos
+					new Coords(45, 25), // size
+					"Select",
+					// click
+					function()
+					{	
+						var listProfiles = this.parent.children["listProfiles"];
+						var profileSelected = listProfiles.itemSelected();
+						var universe = Globals.Instance.universe;
+						universe.profile = profileSelected;
+						var venueNext = new VenueControls
+						(
+							ControlBuilder.profileDetail()
+						);				
+						venueNext = new VenueFader(venueNext);		
+						universe.venueNext = venueNext;
+					}
+				),
+
+			]
+		);
+
+		return returnValue;
+	}
+
+	ControlBuilder.title = function()
+	{
+		return new ControlContainer
+		(
+			"containerTitle",
+			new Coords(0, 0), // pos
+			new Coords(400, 300), // size
+			// children
+			[
+				new ControlImage
+				(
+					"imageTitle",
+					new Coords(0, 0),
+					new Coords(200, 150), // size
+					"Title.png"
+				),
+	
+				/*
+				new ControlLabel
+				(
+					"labelTitle",
+					new Coords(50, 50), // pos
+					new Coords(100, 25), // size
+					true, // isTextCentered
+					Globals.Instance.programName
+				),
+				*/
+	
+				new ControlButton
+				(
+					"buttonStart",
+					new Coords(75, 100), // pos
+					new Coords(50, 25), // size
+					"Start",
+					// click
+					function()
+					{
+						var venueNext = new VenueControls
+						(
+							ControlBuilder.profileSelect()
+						);
+						venueNext = new VenueFader(venueNext);
+						var universe = Globals.Instance.universe;
+						universe.venueNext = venueNext;
+					}
+				),
+			]
+		);
+	}
+
+	ControlBuilder.worldDetail = function()
+	{
+		var universe = Globals.Instance.universe;
+		var world = universe.world;
+
+		var returnValue = new ControlContainer
+		(
+			"containerWorldDetail",
+			new Coords(0, 0), // pos
+			new Coords(200, 150), // size
+			// children
+			[
+				new ControlLabel
+				(
+					"labelProfileName",
+					new Coords(50, 15), // pos
+					new Coords(100, 25), // size
+					true, // isTextCentered
+					universe.profile.name
+				),
+				new ControlLabel
+				(
+					"labelWorldName",
+					new Coords(50, 30), // pos
+					new Coords(100, 25), // size
+					true, // isTextCentered
+					world.name
+				),
+				new ControlLabel
+				(
+					"labelStartDate",
+					new Coords(50, 45), // pos
+					new Coords(100, 25), // size
+					true, // isTextCentered
+					"Started:" + world.dateCreated.toStringTimestamp()
+				),
+				new ControlLabel
+				(
+					"labelSavedDate",
+					new Coords(50, 60), // pos
+					new Coords(100, 25), // size
+					true, // isTextCentered
+					"Saved:" + world.dateSaved.toStringTimestamp()
+				),
+
+				new ControlButton
+				(
+					"buttonStart",
+					new Coords(50, 100), // pos
+					new Coords(100, 25), // size
+					"Start",
+					// click
+					function ()
+					{
+						var universe = Globals.Instance.universe;						
+						var venueNext = new VenueWorld
+						(
+							universe.world
+						);
+						venueNext = new VenueFader(venueNext);
+						universe.venueNext = venueNext;
+					}
+				),
+
+				new ControlButton
+				(
+					"buttonBack",
+					new Coords(10, 10), // pos
+					new Coords(15, 15), // size
+					"<",
+					// click
+					function ()
+					{
+						var venueNext = new VenueControls
+						(
+							ControlBuilder.profileDetail()
+						);
+						venueNext = new VenueFader(venueNext);
+						var universe = Globals.Instance.universe;
+						universe.venueNext = venueNext;
+					}
+				),	
+
+				new ControlButton
+				(
+					"buttonDelete",
+					new Coords(180, 10), // pos
+					new Coords(15, 15), // size
+					"x",
+					// click
+					function ()
+					{
+						var universe = Globals.Instance.universe;
+						var profile = universe.profile;
+						var world = universe.world;
+
+						var controlConfirm = ControlBuilder.confirm
+						(
+							"Delete World \"" 
+								+ world.name 
+								+ "\"?",
+							// confirm
+							function()
+							{
+								var universe = Globals.Instance.universe;
+								var profile = universe.profile;
+								var world = universe.world;
+								var worlds = profile.worlds;
+								var worldIndex = worlds.indexOf(world);
+
+								worlds.splice
+								(
+									worldIndex,
+									1
+								);
+								universe.world = null;
+								
+								Globals.Instance.profileHelper.profileSave
+								(
+									profile
+								);
+
+								var venueNext = new VenueControls
+								(
+									ControlBuilder.profileDetail()
+								);
+								venueNext = new VenueFader(venueNext);
+								universe.venueNext = venueNext;
+							},
+							// cancel
+							function()
+							{
+								var venueNext = new VenueControls
+								(
+									ControlBuilder.worldDetail()
+								);
+								venueNext = new VenueFader(venueNext);
+								var universe = Globals.Instance.universe;
+								universe.venueNext = venueNext;
+							}						
+						);
+
+						var venueNext = new VenueControls(controlConfirm);
+						venueNext = new VenueFader(venueNext);
+
+						universe.venueNext = venueNext;
+					}
+				),
+			]
+		);
+
+		return returnValue;
+	}	
+}
+
+function ControlButton(name, pos, size, text, click)
+{
+	this.name = name;
+	this.pos = pos;
+	this.size = size;
+	this.text = text;
+	this.click = click;
+
+	this.isHighlighted = false;	
+}
+{
+	ControlButton.prototype.draw = function()
+	{
+		Globals.Instance.displayHelper.drawControlButton(this);
+	}
+
+	ControlButton.prototype.mouseClick = function(clickPos)
+	{
+		this.click();
+	}
+
+	ControlButton.prototype.mouseEnter = function(mouseMovePos)
+	{
+		this.isHighlighted = true;
+	}
+
+	ControlButton.prototype.mouseExit = function(mouseMovePos)
+	{
+		this.isHighlighted = false;
+	}
+}
+
+function ControlContainer(name, pos, size, children)
+{
+	this.name = name;
+	this.pos = pos;
+	this.size = size;
+	this.children = children;
+
+	this.children.addLookups("name");
+
+	for (var i = 0; i < this.children.length; i++)
+	{
+		var child = this.children[i];
+		child.parent = this;
+	}
+
+	this.indexOfChildWithFocus = null;
+	this.childrenContainingPos = [];
+	this.childrenContainingPosPrev = [];
+}
+{
+	// instance methods
+
+	ControlContainer.prototype.childWithFocus = function()
+	{
+		var returnValue = 
+		(
+			this.indexOfChildWithFocus == null 
+			? null 
+			: this.children[this.indexOfChildWithFocus]
+		);
+
+		return returnValue;
+	}
+
+	ControlContainer.prototype.childrenAtPosAddToList = function
+	(
+		posToCheck, 
+		listToAddTo, 
+		addFirstChildOnly
+	)
+	{
+		for (var i = this.children.length - 1; i >= 0; i--)
+		{
+			var child = this.children[i];
+
+			var doesChildContainPos = posToCheck.isWithinRange
+			(
+				child.pos,
+				child.pos.clone().add(child.size)
+			);
+
+			if (doesChildContainPos == true)
+			{
+				listToAddTo.push(child);
+				if (addFirstChildOnly == true)
+				{
+					break;
+				}
+			}
+		}
+
+		return listToAddTo;
+	}
+
+	ControlContainer.prototype.draw = function()
+	{
+		Globals.Instance.displayHelper.drawControlContainer(this);
+	}
+
+	ControlContainer.prototype.keyPressed = function(keyCodePressed, isShiftKeyPressed)
+	{
+		var childWithFocus = this.childWithFocus();
+		if (childWithFocus != null)
+		{
+			if (childWithFocus.keyPressed != null)
+			{
+				childWithFocus.keyPressed(keyCodePressed, isShiftKeyPressed);
+			}
+		}
+	}
+
+	ControlContainer.prototype.mouseClick = function(mouseClickPos)
+	{
+		var childrenContainingPos = this.childrenContainingPos;
+		childrenContainingPos.length = 0;
+		
+		this.childrenAtPosAddToList
+		(
+			mouseClickPos,
+			childrenContainingPos,
+			true
+		);
+
+		for (var i = 0; i < childrenContainingPos.length; i++)
+		{
+			var child = childrenContainingPos[i];
+			if (child.mouseClick != null)
+			{
+				child.mouseClick(mouseClickPos);
+			}
+		}
+	}
+
+	ControlContainer.prototype.mouseMove = function(mouseMovePos)
+	{
+		var temp = this.childrenContainingPosPrev;
+		this.childrenContainingPosPrev = this.childrenContainingPos;
+		this.childrenContainingPos = temp;
+
+		var childrenContainingPos = this.childrenContainingPos;
+		childrenContainingPos.length = 0;
+		this.childrenAtPosAddToList
+		(
+			mouseMovePos,
+			childrenContainingPos,
+			true
+		);
+
+		for (var i = 0; i < childrenContainingPos.length; i++)
+		{
+			var child = childrenContainingPos[i];
+
+			if (child.mouseMove != null)
+			{
+				child.mouseMove(mouseMovePos);
+			}
+			if (this.childrenContainingPosPrev.indexOf(child) == -1)
+			{
+				if (child.mouseEnter != null)
+				{
+					child.mouseEnter();
+				}
+			}
+		}
+
+		for (var i = 0; i < this.childrenContainingPosPrev.length; i++)
+		{
+			var child = this.childrenContainingPosPrev[i];
+			if (childrenContainingPos.indexOf(child) == -1)
+			{
+				if (child.mouseExit != null)
+				{
+					child.mouseExit();
+				}
+			}
+		}
+	}
+}
+
+function ControlImage(name, pos, size, imageSrc)
+{
+	this.name = name;
+	this.pos = pos;
+	this.size = size;
+	this.imageSrc = imageSrc;
+}
+{
+	ControlImage.prototype.draw = function()
+	{
+		if (this.systemImage == null)
+		{
+			this.systemImage = document.createElement("img");
+			this.systemImage.src = this.imageSrc;
+		}
+
+		Globals.Instance.displayHelper.drawControlImage(this);
+	}
+}
+
+function ControlLabel(name, pos, size, isTextCentered, text)
+{
+	this.name = name;
+	this.pos = pos;
+	this.size = size;
+	this.isTextCentered = isTextCentered;
+	this.text = text;
+}
+{
+	ControlLabel.prototype.draw = function()
+	{
+		Globals.Instance.displayHelper.drawControlLabel(this);
+	}
+}
+
+function ControlList(name, pos, size, dataBindingForItems, bindingExpressionForItemText)
+{
+	this.name = name;
+	this.pos = pos;
+	this.size = size;
+	this.dataBindingForItems = dataBindingForItems;
+	this.bindingExpressionForItemText = bindingExpressionForItemText;
+
+	this.itemSpacing = 12; // hack
+
+	this.indexOfItemSelected = 0;
+	this.indexOfFirstItemVisible = 0;
+}
+{
+	ControlList.prototype.draw = function()
+	{
+		Globals.Instance.displayHelper.drawControlList(this);
+	}
+
+	ControlList.prototype.itemSelected = function()
+	{
+		return (this.indexOfItemSelected == null ? null : this.items()[this.indexOfItemSelected]);
+	}
+
+	ControlList.prototype.items = function()
+	{
+		return this.dataBindingForItems.get();
+	}
+
+	ControlList.prototype.mouseClick = function(clickPos)
+	{
+		var offsetOfItemClicked = clickPos.y - this.pos.y;
+		var indexOfItemClicked = 
+			this.indexOfFirstItemVisible 
+			+ Math.floor
+			(
+				offsetOfItemClicked / this.itemSpacing
+			);
+
+		if (indexOfItemClicked <= this.items.length)
+		{
+			this.indexOfItemSelected = indexOfItemClicked;
+		}	
+	}
+}
+
+function ControlSelect
+(
+	name, 
+	pos, 
+	size, 
+	dataBindingForValueSelected,
+	dataBindingForOptions,
+	bindingExpressionForOptionValues,
+	bindingExpressionForOptionText
+)
+{
+	this.name = name;
+	this.pos = pos;
+	this.size = size;
+	this.dataBindingForValueSelected = dataBindingForValueSelected;
+	this.dataBindingForOptions = dataBindingForOptions;
+	this.bindingExpressionForOptionValues = bindingExpressionForOptionValues;
+	this.bindingExpressionForOptionText = bindingExpressionForOptionText;
+
+	this.indexOfOptionSelected = null;
+	var valueSelected = this.valueSelected();
+	var options = this.options();
+	for (var i = 0; i < options.length; i++)
+	{
+		var option = options[i];
+		var optionValue = DataBinding.get
+		(
+			option,
+			this.bindingExpressionForOptionValues
+		);
+
+		if (optionValue == valueSelected)
+		{
+			this.indexOfOptionSelected = i;
+			break;
+		}
+	}
+}
+{
+	ControlSelect.prototype.draw = function()
+	{
+		Globals.Instance.displayHelper.drawControlSelect(this);
+	}
+
+	ControlSelect.prototype.optionSelected = function()
+	{
+		var returnValue = null;
+
+		if (this.indexOfOptionSelected != null)
+		{
+			var optionAsObject = this.options()[this.indexOfOptionSelected];
+	
+			var optionValue = DataBinding.get
+			(
+				optionAsObject, 
+				this.bindingExpressionForOptionValues
+			);
+			var optionText = DataBinding.get
+			(
+				optionAsObject, 
+				this.bindingExpressionForOptionText
+			);
+	
+			returnValue = new ControlSelectOption
+			(
+				optionValue,
+				optionText
+			);
+		};
+	
+		return returnValue;	
+	}
+
+	ControlSelect.prototype.options = function()
+	{
+		return this.dataBindingForOptions.get();
+	}
+
+	ControlSelect.prototype.mouseClick = function(clickPos)
+	{
+		this.indexOfOptionSelected++;
+
+		var options = this.options();
+
+		if (this.indexOfOptionSelected >= options.length)
+		{
+			this.indexOfOptionSelected = 0;
+		}	
+
+		var optionSelected = this.optionSelected();
+
+		this.dataBindingForValueSelected.set(optionSelected.value);
+	}
+
+	ControlSelect.prototype.valueSelected = function()
+	{
+		return this.dataBindingForValueSelected.get();
+	}
+}
+
+function ControlSelectOption(value, text)
+{
+	this.value = value;
+	this.text = text;
+}
+
+function ControlTextBox(name, pos, size, text)
+{
+	this.name = name;
+	this.pos = pos;
+	this.size = size;
+	this.text = text;
+
+	this.isHighlighted = false;
+}
+{
+	ControlTextBox.prototype.draw = function()
+	{
+		Globals.Instance.displayHelper.drawControlTextBox(this);
+	}
+	
+	ControlTextBox.prototype.keyPressed = function(keyCodePressed, isShiftKeyPressed)
+	{
+		if (keyCodePressed == 8) // backspace
+		{
+			this.text = this.text.substr(0, this.text.length - 1);
+		}
+		else
+		{
+			var charTyped = String.fromCharCode(keyCodePressed);
+			if (isShiftKeyPressed == false)
+			{
+				charTyped = charTyped.toLowerCase();
+			}
+			this.text += charTyped;
+		}
+	}
+
+	ControlTextBox.prototype.mouseClick = function(mouseClickPos)
+	{
+		var parent = this.parent;
+		parent.indexOfChildWithFocus = parent.children.indexOf(this);
+		this.isHighlighted = true;
+	}
+}
+
+function Coords(x, y)
+{
+	this.x = x;
+	this.y = y;
+}
+{
+	Coords.prototype.add = function(other)
+	{
+		this.x += other.x;
+		this.y += other.y;
+		return this;
+	}
+
+	Coords.prototype.clone = function()
+	{
+		return new Coords(this.x, this.y);
+	}
+
+	Coords.prototype.equals = function(other)
+	{
+		return (this.x == other.x && this.y == other.y);
+	}
+
+	Coords.prototype.isWithinRange = function(min, max)
+	{
+		var returnValue = 
+		(
+			this.x >= min.x
+			&& this.x <= max.x
+			&& this.y >= min.y
+			&& this.y <= max.y
+		);
+
+		return returnValue;
+	}
+
+	Coords.prototype.overwriteWith = function(other)
+	{
+		this.x = other.x;
+		this.y = other.y;
+		return this;
+	}
+
+	Coords.prototype.overwriteWithXY = function(x, y)
+	{
+		this.x = x;
+		this.y = y;
+		return this;
+	}
+}
+
+function DataBinding(context, bindingExpression)
+{
+	this.context = context;
+	this.bindingExpression = bindingExpression;
+}
+{
+	DataBinding.get = function(context, bindingExpression)
+	{
+		var returnValue = context;
+
+		if (bindingExpression != null)
+		{
+			returnValue = returnValue[bindingExpression];
+		}
+
+		return returnValue;
+	}
+
+	// instance methods
+
+	DataBinding.prototype.get = function()
+	{
+		return DataBinding.get(this.context, this.bindingExpression);
+	}
+
+	DataBinding.prototype.set = function(valueToSet)
+	{
+		// hack
+		this.context[this.bindingExpression] = valueToSet;
+	}
+}
+
+function DateTime(year, month, day, hours, minutes, seconds)
+{
+	this.year = year;
+	this.month = month;
+	this.day = day;
+	this.hours = hours;
+	this.minutes = minutes;
+	this.seconds = seconds;
+}
+{
+	// static methods
+
+	DateTime.fromSystemDate = function(systemDate)
+	{
+		var returnValue = new DateTime
+		(
+			systemDate.getFullYear(),
+			systemDate.getMonth() + 1,
+			systemDate.getDate(),
+			systemDate.getHours(),
+			systemDate.getMinutes(),
+			systemDate.getSeconds()
+		);
+	
+		return returnValue;
+	}
+
+	DateTime.now = function()
+	{
+		return DateTime.fromSystemDate(new Date());
+	}
+
+	// instance methods
+
+	DateTime.prototype.toStringTimestamp = function()
+	{
+		var returnValue = 
+			""
+			+ this.year
+			+ "/"
+			+ StringHelper.padStringLeft(this.month, 2, "0")
+			+ "/"
+			+ StringHelper.padStringLeft(this.day, 2, "0")
+			+ "-"
+			+ StringHelper.padStringLeft(this.hours, 2, "0")
+			+ ":"
+			+ StringHelper.padStringLeft(this.minutes, 2, "0")
+			+ ":"
+			+ StringHelper.padStringLeft(this.seconds, 2, "0")
+
+		return returnValue;
+	}
+}
+
+function DisplayHelper(viewSize, fontHeightInPixels)
+{
+	this.viewSize = viewSize;
+	this.fontHeightInPixels = fontHeightInPixels;
+}
+{
+	DisplayHelper.prototype.clear = function(colorBorder, colorBack)
+	{
+		this.drawRectangle
+		(
+			new Coords(0, 0), 
+			this.viewSize, 
+			(colorBorder == null ? "Gray" : colorBorder), 
+			(colorBack == null ? "White" : colorBack)
+		);
+	}
+
+	DisplayHelper.prototype.drawControlButton = function(control)
+	{
+		var pos = control.pos;
+		var size = control.size;
+
+		var colorsForeAndBack;
+
+		if (control.isHighlighted == true)
+		{
+			colorsForeAndBack = ["White", "Gray"];
+		}
+		else
+		{
+			colorsForeAndBack = ["Gray", "White"];
+		}
+
+		this.drawRectangle
+		(
+			pos, size, 
+			colorsForeAndBack[0], colorsForeAndBack[1]
+		)
+
+		var text = control.text;
+
+		var textWidth = this.graphics.measureText(text).width;
+		var textMarginLeft = (size.x - textWidth) / 2;
+		var textHeight = this.fontHeightInPixels;
+		var textMarginTop = (size.y - textHeight) / 2;
+
+		this.graphics.fillStyle = colorsForeAndBack[0];
+		this.graphics.fillText
+		(
+			text,
+			pos.x + textMarginLeft,
+			pos.y + textMarginTop + textHeight
+		);
+	}
+
+	DisplayHelper.prototype.drawControlContainer = function(container)
+	{
+		var pos = container.pos
+		var size = container.size;
+
+		this.drawRectangle
+		(
+			pos, size, "Gray", "White"
+		)
+
+		var children = container.children;
+		for (var i = 0; i < children.length; i++)
+		{
+			var child = children[i];
+			child.draw();
+		}
+	}
+
+	DisplayHelper.prototype.drawControlImage = function(controlImage)
+	{
+		var pos = controlImage.pos
+		var size = controlImage.size;
+
+		this.drawRectangle
+		(
+			pos, size, "Gray", "White"
+		)
+
+		this.graphics.drawImage
+		(
+			controlImage.systemImage,
+			pos.x, pos.y,
+			this.viewSize.x, this.viewSize.y
+		);
+	}
+
+	DisplayHelper.prototype.drawControlLabel = function(control)
+	{
+		var pos = control.pos;
+		var size = control.size;
+		var text = control.text;
+
+		var textHeight = this.fontHeightInPixels;
+
+		var textMargins;
+
+		if (control.isTextCentered == true)
+		{
+			var textWidth = this.graphics.measureText(text).width;
+			textMargins = new Coords
+			(
+				(size.x - textWidth) / 2,
+				(size.y - textHeight) / 2
+			);
+		}
+		else
+		{
+			textMargins = new Coords
+			(
+				2,
+				(size.y - textHeight) / 2
+			);
+		}
+
+		this.graphics.fillStyle = "Gray";
+		this.graphics.fillText
+		(
+			text,
+			pos.x + textMargins.x ,
+			pos.y + textMargins.y + textHeight
+		);				
+	}
+
+	DisplayHelper.prototype.drawControlList = function(list)
+	{
+		var pos = list.pos
+		var size = list.size;
+
+		this.drawRectangle
+		(
+			pos, size, "Gray", "White"
+		);
+
+		this.graphics.fillStyle = "Gray";
+		var itemSizeY = list.itemSpacing;
+		var textMarginLeft = 2;
+		var itemPosY = pos.y;
+
+		var items = list.items();
+
+		var numberOfItemsVisible = Math.floor(size.y / itemSizeY);
+		var indexStart = list.indexOfFirstItemVisible;
+		var indexEnd = indexStart + numberOfItemsVisible - 1;
+		if (indexEnd >= items.length)
+		{
+			indexEnd = items.length - 1;
+		}
+
+		for (var i = indexStart; i <= indexEnd; i++)
+		{
+			if (i == list.indexOfItemSelected)
+			{
+				this.graphics.strokeRect
+				(
+					pos.x + textMarginLeft, 
+					itemPosY,
+					size.x - textMarginLeft * 2,
+					itemSizeY
+				)
+			}
+
+			var item = items[i];
+			var text = DataBinding.get
+			(
+				item, list.bindingExpressionForItemText
+			);
+
+			itemPosY += itemSizeY;
+
+			this.graphics.fillText
+			(
+				text,
+				pos.x + textMarginLeft,
+				itemPosY
+			);			
+		}
+	}
+
+	DisplayHelper.prototype.drawControlSelect = function(control)
+	{
+		var pos = control.pos;
+		var size = control.size;
+
+		var colorsForeAndBack = ["Gray", "White"];
+
+		this.drawRectangle
+		(
+			pos, size, 
+			colorsForeAndBack[0], colorsForeAndBack[1]
+		)
+
+		var text = control.optionSelected().text;
+
+		var textWidth = this.graphics.measureText(text).width;
+		var textMarginLeft = (control.size.x - textWidth) / 2;
+		var textHeight = this.fontHeightInPixels;
+		var textMarginTop = (control.size.y - textHeight) / 2;
+
+		this.graphics.fillStyle = colorsForeAndBack[0];
+		this.graphics.fillText
+		(
+			text,
+			pos.x + textMarginLeft,
+			pos.y + textMarginTop + textHeight
+		);
+	}
+
+
+	DisplayHelper.prototype.drawControlTextBox = function(control)
+	{
+		var pos = control.pos;
+		var size = control.size;
+
+		var text = control.text;
+		var colorsForeAndBack;
+
+		if (control.isHighlighted == true)
+		{
+			colorsForeAndBack = ["White", "Gray"];
+			text += "|";
+		}
+		else
+		{
+			colorsForeAndBack = ["Gray", "White"];
+		}
+
+		this.drawRectangle
+		(
+			pos, size, 
+			colorsForeAndBack[0], colorsForeAndBack[1]
+		)
+
+		var textWidth = this.graphics.measureText(text).width;
+		var textMarginLeft = (size.x - textWidth) / 2;
+		var textHeight = this.fontHeightInPixels;		
+		var textMarginTop = (size.y - textHeight) / 2;
+
+		this.graphics.fillStyle = colorsForeAndBack[0];
+		this.graphics.fillText
+		(
+			text,
+			pos.x + textMarginLeft ,
+			pos.y + textMarginTop + textHeight
+		);				
+	}
+
+	DisplayHelper.prototype.drawRectangle = function
+	(
+		pos, size, colorBorder, colorBack
+	)
+	{
+		this.graphics.fillStyle = colorBack;
+		this.graphics.fillRect
+		(
+			pos.x, pos.y,
+			size.x, size.y
+		);
+
+		if (colorBorder != null)
+		{
+			this.graphics.strokeStyle = colorBorder;
+			this.graphics.strokeRect
+			(
+				pos.x, pos.y,
+				size.x, size.y
+			);
+		}
+	}
+
+	DisplayHelper.prototype.hide = function()
+	{
+		Globals.Instance.divMain.removeChild(this.canvasLive);		
+	}
+
+	DisplayHelper.prototype.initialize = function()
+	{
+		this.canvasBuffer = document.createElement("canvas");
+		this.canvasBuffer.width = this.viewSize.x;
+		this.canvasBuffer.height = this.viewSize.y;
+
+		this.graphics = this.canvasBuffer.getContext("2d");
+		this.graphics.font = 
+			"" + this.fontHeightInPixels + "px sans-serif";
+
+		/*
+		this.canvasLive = document.createElement("canvas");
+		this.canvasLive.width = this.viewSize.x;
+		this.canvasLive.height = this.viewSize.y;
+		this.graphicsLive = this.canvasLive.getContext("2d");
+		*/
+
+		// hack - double-buffering test
+		this.canvasLive = this.canvasBuffer;
+		this.graphicsLive = this.graphics;
+
+		Globals.Instance.divMain.appendChild(this.canvasLive);
+	}
+
+	DisplayHelper.prototype.refresh = function()
+	{
+		this.graphicsLive.drawImage(this.canvasBuffer, 0, 0);
+	}
+
+	DisplayHelper.prototype.show = function()
+	{
+		Globals.Instance.divMain.appendChild(this.canvasLive);		
+	}
+}
+
+function Globals()
+{}
+{
+	// instance
+
+	Globals.Instance = new Globals();
+
+	// instance methods
+
+	Globals.prototype.handleEventTimerTick = function()
+	{
+		this.universe.updateForTimerTick();
+	}
+
+	Globals.prototype.initialize = function
+	(
+		programName,
+		millisecondsPerTimerTick, 
+		viewSize, 
+		universe,
+		sounds,
+		videos
+	)
+	{
+		this.programName = programName;
+		
+		this.serializer = new Serializer
+		([
+			Coords,
+			DateTime,
+			Profile,
+			World,
+			Universe
+		]);
+		this.displayHelper = new DisplayHelper(viewSize, 10);
+		this.inputHelper = new InputHelper();
+		this.profileHelper = new ProfileHelper();
+		this.soundHelper = new SoundHelper(sounds);
+		this.videoHelper = new VideoHelper(videos);
+
+		this.universe = universe;
+
+		var divMain = document.createElement("div");
+		divMain.style.position = "absolute";
+		divMain.style.left = "50%";
+		divMain.style.top = "50%";
+		divMain.style.marginTop = 0 - viewSize.x / 2;
+		divMain.style.marginLeft = 0 - viewSize.y / 2;
+		document.body.appendChild(divMain);
+		this.divMain = divMain;
+
+		this.displayHelper.initialize();
+		this.inputHelper.initialize();
+		this.universe.initialize();
+
+		this.timer = setInterval
+		(
+			this.handleEventTimerTick.bind(this),
+			millisecondsPerTimerTick
+		);
+	}
+
+	Globals.prototype.reset = function()
+	{
+		this.soundHelper.reset();
+	}
+}
+
+function InputHelper()
+{
+	this.keyCodePressed = null;
+	this.isShiftKeyPressed = false;
+	this.isMouseClicked = false;
+	this.mouseClickPos = new Coords(0, 0);
+	this.mouseMovePos = new Coords(0, 0);
+	this.mouseMovePosPrev = new Coords(0, 0);
+
+	this.tempPos = new Coords(0, 0);
+}
+{
+	InputHelper.prototype.handleEventKeyDown = function(event)
+	{
+		event.preventDefault();
+		this.isShiftKeyPressed = event.shiftKey;
+		this.keyCodePressed = event.keyCode;
+	}
+
+	InputHelper.prototype.handleEventKeyUp = function(event)
+	{
+		this.keyCodePressed = null;
+	}
+
+	InputHelper.prototype.handleEventMouseDown = function(event)
+	{
+		this.isMouseClicked = true;
+		this.mouseClickPos.overwriteWithXY
+		(
+			event.layerX,
+			event.layerY
+		)
+	}
+
+	InputHelper.prototype.handleEventMouseMove = function(event)
+	{
+		this.mouseMovePosPrev.overwriteWith
+		(
+			this.mouseMovePos
+		);
+	
+		this.mouseMovePos.overwriteWithXY
+		(
+			event.layerX,
+			event.layerY
+		);
+	}
+
+	InputHelper.prototype.handleEventMouseUp = function(event)
+	{
+		this.isMouseClicked = false;
+	}	
+
+	InputHelper.prototype.initialize = function()
+	{
+		document.body.onkeydown = this.handleEventKeyDown.bind(this);
+		document.body.onkeyup = this.handleEventKeyUp.bind(this);
+		Globals.Instance.divMain.onmousedown = this.handleEventMouseDown.bind(this);
+		Globals.Instance.divMain.onmousemove = this.handleEventMouseMove.bind(this);
+		Globals.Instance.divMain.onmouseup = this.handleEventMouseUp.bind(this);
+	}
+}
+
+function Profile(name, worlds)
+{
+	this.name = name;
+	this.worlds = worlds;
+}
+
+function ProfileHelper()
+{}
+{
+	ProfileHelper.prototype.profileAdd = function(profile)
+	{
+		var profiles = this.profiles();
+		profiles.push(profile);
+		var propertyName = 
+			Globals.Instance.programName
+			+ ".Profiles";
+		StorageHelper.save
+		(
+			propertyName,
+			profiles
+		);
+	}
+
+	ProfileHelper.prototype.profileDelete = function(profileToDelete)
+	{
+		var profilesStored = this.profiles();
+		
+		var profileIndex = this.profileIndexFindByName
+		(
+			profilesStored,
+			profileToDelete.name
+		);
+
+		profilesStored.splice
+		(
+			profileIndex,
+			1
+		);
+
+		var propertyName = 
+			Globals.Instance.programName
+			+ ".Profiles";
+
+		StorageHelper.save
+		(
+			propertyName,
+			profilesStored
+		);
+	}
+
+
+	ProfileHelper.prototype.profileIndexFindByName = function(profiles, profileNameToFind)
+	{
+		var returnValue = null;
+
+		for (var i = 0; i < profiles.length; i++)
+		{
+			var profile = profiles[i];
+			if (profile.name == profileNameToFind)
+			{
+				returnValue = i;
+				break;
+			}
+		}
+
+		return returnValue;
+	}
+
+	ProfileHelper.prototype.profileSave = function(profileToSave)
+	{
+		var profilesStored = this.profiles();
+		
+		var profileIndex = this.profileIndexFindByName
+		(
+			profilesStored,
+			profileToSave.name
+		);
+
+		profilesStored.splice
+		(
+			profileIndex,
+			1,
+			profileToSave
+		);
+
+		var propertyName = 
+			Globals.Instance.programName
+			+ ".Profiles";
+
+		StorageHelper.save
+		(
+			propertyName,
+			profilesStored
+		);
+	}
+
+	ProfileHelper.prototype.profiles = function()
+	{
+		var propertyName = 
+			Globals.Instance.programName
+			+ ".Profiles";
+
+		var profiles = StorageHelper.load
+		(
+			propertyName
+		);
+
+		if (profiles == null)
+		{
+			profiles = [];
+			StorageHelper.save
+			(
+				propertyName, 
+				profiles
+			);
+		}
+
+		return profiles;
+	}
+}
+
+function Serializer(knownTypes)
+{
+	this.knownTypes = knownTypes;
+
+	for (var i = 0; i < this.knownTypes.length; i++)
+	{
+		var knownType = this.knownTypes[i];
+		this.knownTypes[knownType.name] = knownType;
+	}
+}
+{
+	Serializer.prototype.deleteClassNameRecursively = function(objectToDeleteClassNameOn)
+	{
+		var className = objectToDeleteClassNameOn.constructor.name;
+		if (this.knownTypes[className] != null)
+		{
+			delete objectToDeleteClassNameOn.className;
+
+			for (var childPropertyName in objectToDeleteClassNameOn)
+			{
+				var childProperty = objectToDeleteClassNameOn[childPropertyName];
+				this.deleteClassNameRecursively(childProperty);
+			}
+		}
+		else if (className == "Array")
+		{
+			for (var i = 0; i < objectToDeleteClassNameOn.length; i++)
+			{
+				var element = objectToDeleteClassNameOn[i];
+				this.deleteClassNameRecursively(element);
+			}
+		}
+	}
+
+	Serializer.prototype.deserialize = function(stringToDeserialize)
+	{
+		var objectDeserialized = JSON.parse(stringToDeserialize);
+
+		this.setPrototypeRecursively(objectDeserialized);
+
+		this.deleteClassNameRecursively(objectDeserialized);
+
+		return objectDeserialized;
+	}
+
+	Serializer.prototype.serialize = function(objectToSerialize)
+	{
+		this.setClassNameRecursively(objectToSerialize);
+
+		var returnValue = JSON.stringify(objectToSerialize);
+
+		this.deleteClassNameRecursively(objectToSerialize);
+
+		return returnValue;
+	}
+
+	Serializer.prototype.setClassNameRecursively = function(objectToSetClassNameOn)
+	{
+		var className = objectToSetClassNameOn.constructor.name;
+		
+		if (this.knownTypes[className] != null)
+		{
+			for (var childPropertyName in objectToSetClassNameOn)
+			{
+				var childProperty = objectToSetClassNameOn[childPropertyName];
+				this.setClassNameRecursively(childProperty);
+			}
+
+			objectToSetClassNameOn.className = className;
+		}
+		else if (className == "Array")
+		{
+			for (var i = 0; i < objectToSetClassNameOn.length; i++)
+			{
+				var element = objectToSetClassNameOn[i];
+				this.setClassNameRecursively(element);
+			}
+		}
+	}
+
+	Serializer.prototype.setPrototypeRecursively = function(objectToSetPrototypeOn)
+	{
+		var className = objectToSetPrototypeOn.className;
+		var typeOfObjectToSetPrototypeOn = this.knownTypes[className];
+
+		if (typeOfObjectToSetPrototypeOn != null)
+		{
+			objectToSetPrototypeOn.__proto__ = typeOfObjectToSetPrototypeOn.prototype;
+	
+			for (var childPropertyName in objectToSetPrototypeOn)
+			{
+				var childProperty = objectToSetPrototypeOn[childPropertyName];
+				this.setPrototypeRecursively(childProperty);
+			}
+		}
+		else if (objectToSetPrototypeOn.constructor.name == "Array")
+		{
+			for (var i = 0; i < objectToSetPrototypeOn.length; i++)
+			{
+				var element = objectToSetPrototypeOn[i];
+				this.setPrototypeRecursively(element);
+			}
+		}
+	}
+}
+
+function Sound(name, sourcePath)
+{
+	this.name = name;
+	this.sourcePath = sourcePath;
+
+	this.offsetInSeconds = 0;
+}
+{	
+	Sound.prototype.domElementBuild = function(volume)
+	{
+		this.domElement = document.createElement("audio");
+		this.domElement.sound = this;
+		this.domElement.autoplay = true;
+		this.domElement.oncanplay = this.play2.bind(this);
+		this.domElement.onended = this.stop.bind(this);
+		this.domElement.volume = volume;
+
+		var domElementForSoundSource = document.createElement("source");
+		domElementForSoundSource.src = this.sourcePath;
+
+		this.domElement.appendChild
+		(
+			domElementForSoundSource
+		);
+
+		return this.domElement;
+	}
+
+	Sound.prototype.pause = function()
+	{
+		var offsetInSeconds = this.domElement.currentTime;
+		this.stop();
+		this.offsetInSeconds = offsetInSeconds;
+	}
+
+	Sound.prototype.play = function(volume)
+	{
+		Globals.Instance.divMain.appendChild
+		(
+			this.domElementBuild(volume)
+		);
+	}
+
+	Sound.prototype.play2 = function()
+	{
+		this.domElement.currentTime = this.offsetInSeconds;
+		this.domElement.play();
+	}
+
+	Sound.prototype.reset = function()
+	{
+		this.offsetInSeconds = 0;
+	}
+
+	Sound.prototype.stop = function(event)
+	{
+		var domElement = (event == null ? this.domElement : event.srcElement);
+		Globals.Instance.divMain.removeChild(domElement);
+		this.offsetInSeconds = 0;
+	}
+}
+
+function SoundHelper(sounds)
+{
+	this.sounds = sounds;
+	this.sounds.addLookups("name");
+
+	this.musicVolume = 1;
+	this.soundVolume = 1;
+
+	this.soundForMusic = null;
+}
+{
+	SoundHelper.controlSelectOptionsVolume = function()
+	{
+		var returnValue =
+		[
+			new ControlSelectOption(1, "100%"),
+			new ControlSelectOption(0, "0%"),
+			new ControlSelectOption(.1, "10%"),
+			new ControlSelectOption(.2, "20%"),
+			new ControlSelectOption(.3, "30%"),
+			new ControlSelectOption(.4, "40%"),
+			new ControlSelectOption(.5, "50%"),
+			new ControlSelectOption(.6, "60%"),
+			new ControlSelectOption(.7, "70%"),
+			new ControlSelectOption(.8, "80%"),
+			new ControlSelectOption(.9, "90%"),
+		];
+
+		return returnValue;
+	}
+
+	// instance methods
+
+	SoundHelper.prototype.reset = function()
+	{
+		for (var i = 0; i < this.sounds.length; i++)
+		{
+			var sound = this.sounds[i];
+			sound.offsetInSeconds = 0;
+		}
+	}
+
+	SoundHelper.prototype.soundWithNamePlayAsEffect = function(soundName)
+	{
+		this.sounds[soundName].play(this.soundVolume);
+	}
+
+	SoundHelper.prototype.soundWithNamePlayAsMusic = function(soundName)
+	{
+		if 
+		(
+			this.soundForMusic != null 
+			&& this.soundForMusic.name != soundName
+		)
+		{
+			this.soundForMusic.stop();
+		}
+		this.soundForMusic = this.sounds[soundName];
+		this.soundForMusic.play(this.musicVolume);
+	}
+
+}
+
+function StorageHelper()
+{}
+{
+	StorageHelper.load = function(propertyName)
+	{
+		var returnValue;
+
+		var returnValueAsString = localStorage.getItem
+		(
+			propertyName
+		);
+
+		if (returnValueAsString == null)
+		{
+			returnValue = null;
+		}
+		else
+		{
+			returnValue = Globals.Instance.serializer.deserialize
+			(
+				returnValueAsString
+			);
+		}
+
+		return returnValue;
+	}
+
+	StorageHelper.save = function(propertyName, valueToSave)
+	{
+		var valueToSaveSerialized = Globals.Instance.serializer.serialize
+		(
+			valueToSave
+		);
+
+		localStorage.setItem
+		(
+			propertyName, 
+			valueToSaveSerialized
+		);
+	}
+}
+
+function StringHelper()
+{
+	// static class
+}
+{
+	StringHelper.padStringLeft = function
+	(
+		stringToPad, 
+		lengthAfterPadding, 
+		characterToPadWith
+	)
+	{
+		while (stringToPad.length < lengthAfterPadding)
+		{
+			stringToPad = characterToPadWith + stringToPad;
+		}
+	
+		return stringToPad;
+	}
+}
+
+function Universe(name, world)
+{
+	this.name = name;
+	this.world = world;
+
+	this.venueNext = null;
+}
+{
+	// static methods
+
+	Universe.new = function(world)
+	{
+		var returnValue = new Universe
+		(
+			"Universe0",
+			world,
+			// venues
+			[
+				// none
+			]
+		);
+
+		return returnValue;
+	}
+
+	// instance methods
+
+	Universe.prototype.initialize = function()
+	{
+		var venueControlsTitle = new VenueControls
+		(
+			ControlBuilder.title()
+		);
+
+		venueControlsTitle = new VenueFader
+		(
+			venueControlsTitle, venueControlsTitle
+		);
+
+		this.venueNext = venueControlsTitle;
+	}
+
+	Universe.prototype.updateForTimerTick = function()
+	{
+		if (this.venueNext != null)
+		{
+			if 
+			(
+				this.venueCurrent != null 
+				&& this.venueCurrent.finalize != null
+			)
+			{
+				this.venueCurrent.finalize();
+			}			
+
+			this.venueCurrent = this.venueNext;
+			this.venueNext = null;
+
+			if (this.venueCurrent.initialize != null)
+			{
+				this.venueCurrent.initialize();
+			}
+		}
+		this.venueCurrent.updateForTimerTick();
+	}
+}
+
+function VenueControls(controlRoot)
+{
+	this.controlRoot = controlRoot;
+}
+{
+	VenueControls.prototype.draw = function()
+	{
+		Globals.Instance.displayHelper.clear();
+		this.controlRoot.draw();
+	}
+
+	VenueControls.prototype.updateForTimerTick = function()
+	{
+		this.draw();
+
+		var inputHelper = Globals.Instance.inputHelper;
+		if (inputHelper.isMouseClicked == true)
+		{
+			var mouseClickPos = inputHelper.mouseClickPos;
+			this.controlRoot.mouseClick(mouseClickPos);
+
+			inputHelper.isMouseClicked = false;
+		}
+		else if (inputHelper.keyCodePressed != null)
+		{
+			var keyCodePressed = inputHelper.keyCodePressed;
+			var isShiftKeyPressed = inputHelper.isShiftKeyPressed;
+			this.controlRoot.keyPressed
+			(
+				keyCodePressed, 
+				isShiftKeyPressed
+			);
+
+			inputHelper.keyCodePressed = null;
+		}
+
+		var mouseMovePos = inputHelper.mouseMovePos;
+		var mouseMovePosPrev = inputHelper.mouseMovePosPrev;
+
+		if (mouseMovePos.equals(mouseMovePosPrev) == false)
+		{
+			this.controlRoot.mouseMove
+			(
+				mouseMovePos, mouseMovePosPrev
+			);
+		}
+	}
+}
+
+function VenueFader
+(
+	venueToFadeTo, 
+	venueToFadeFrom,
+	millisecondsPerFade
+)
+{
+	this.millisecondsPerFade = millisecondsPerFade;	
+	if (this.millisecondsPerFade == null)
+	{
+		this.millisecondsPerFade = 250;
+	}
+
+	if (venueToFadeFrom == null)
+	{
+		venueToFadeFrom = Globals.Instance.universe.venueCurrent;
+	}
+
+	this.venuesToFadeFromAndTo = 
+	[
+		venueToFadeFrom,
+		venueToFadeTo
+	];
+
+	if (venueToFadeFrom == venueToFadeTo)
+	{
+		this.venueIndexCurrent = 1;
+		this.millisecondsPerFade *= 2;
+	}
+	else
+	{
+		this.venueIndexCurrent = 0;
+	}
+}
+{
+	VenueFader.prototype.updateForTimerTick = function()
+	{
+		var venueCurrent = this.venuesToFadeFromAndTo[this.venueIndexCurrent];
+
+		venueCurrent.draw();
+
+		var now = new Date();
+
+		if (this.timeFadeStarted == null)
+		{
+			this.timeFadeStarted = now;
+		}
+
+		var millisecondsSinceFadeStarted = now - this.timeFadeStarted;
+
+		var fractionOfFadeCompleted = millisecondsSinceFadeStarted / this.millisecondsPerFade;
+
+		var alphaOfFadeColor;
+
+		if (this.venueIndexCurrent == 0)
+		{
+			if (fractionOfFadeCompleted > 1)
+			{			
+				fractionOfFadeCompleted = 1;
+				this.venueIndexCurrent++;
+				this.timeFadeStarted = null;
+
+				var venueToFadeTo = this.venuesToFadeFromAndTo[1];
+				if (venueToFadeTo.draw == null)
+				{
+					Globals.Instance.universe.venueNext = venueToFadeTo;
+				}
+
+			}
+			alphaOfFadeColor = fractionOfFadeCompleted;
+		}
+		else // this.venueIndexCurrent == 1
+		{
+			if (fractionOfFadeCompleted > 1)
+			{
+				fractionOfFadeCompleted = 1;
+				Globals.Instance.universe.venueNext = venueCurrent;
+			}
+
+			alphaOfFadeColor = 1 - fractionOfFadeCompleted;
+		}
+
+		alphaOfFadeColor *= alphaOfFadeColor;
+
+		var displayHelper = Globals.Instance.displayHelper;
+
+		displayHelper.drawRectangle
+		(
+			new Coords(0, 0), 
+			displayHelper.viewSize, 
+			null,
+			"rgba(0, 0, 0, " + alphaOfFadeColor + ")"
+		);
+	}
+}
+
+function VenueVideo(videoName, venueNext)
+{
+	this.videoName = videoName;
+	this.venueNext = venueNext;
+
+	this.hasVideoBeenStarted = false;
+}
+{
+	VenueVideo.prototype.updateForTimerTick = function()
+	{
+		if (this.video == null)
+		{
+			Globals.Instance.displayHelper.hide();
+			this.video = Globals.Instance.videoHelper.videos[this.videoName];
+			this.video.play();
+		}	
+
+		var inputHelper = Globals.Instance.inputHelper;
+		if (inputHelper.isMouseClicked == true)
+		{
+			inputHelper.isMouseClicked = false;
+			this.video.stop();
+		}
+
+		if (this.video.isFinished == true)
+		{
+			var displayHelper = Globals.Instance.displayHelper;
+			displayHelper.clear("Black");
+			displayHelper.show();
+			var universe = Globals.Instance.universe;
+			universe.venueNext = this.venueNext;
+		}
+	}
+}
+
+function VenueWorld()
+{
+	this.name = "World";
+}
+{
+	VenueWorld.prototype.draw = function()
+	{
+		Globals.Instance.universe.world.draw();
+	}
+
+	VenueWorld.prototype.finalize = function()
+	{
+		Globals.Instance.soundHelper.soundForMusic.pause();		
+	}
+
+	VenueWorld.prototype.initialize = function()
+	{
+		var soundHelper = Globals.Instance.soundHelper;
+		soundHelper.soundWithNamePlayAsMusic("Music");
+	}
+
+	VenueWorld.prototype.updateForTimerTick = function()
+	{
+		Globals.Instance.universe.world.updateForTimerTick();
+		this.draw();
+	}
+}
+
+function Video(name, sourcePath)
+{
+	this.name = name;
+	this.sourcePath = sourcePath;
+}
+{
+	Video.prototype.domElementBuild = function()
+	{
+		this.domElement = document.createElement("video");
+		this.domElement.src = this.sourcePath;
+		this.domElement.video = this;
+		this.domElement.autoplay = true;
+		this.domElement.onended = this.stop.bind(this);
+
+		var viewSize = Globals.Instance.displayHelper.viewSize;
+		this.domElement.width = viewSize.x;
+		this.domElement.height = viewSize.y;
+
+		return this.domElement;
+	}
+
+	Video.prototype.play = function()
+	{
+		this.isFinished = false;
+		Globals.Instance.divMain.appendChild(this.domElementBuild());
+	}
+
+	Video.prototype.stop = function(event)
+	{
+		var domElement = (event == null ? this.domElement : event.srcElement);
+		Globals.Instance.divMain.removeChild(domElement);
+		this.isFinished = true;
+	}
+}
+
+function VideoHelper(videos)
+{
+	this.videos = videos;
+	this.videos.addLookups("name");
+}
+
+function World(name, cursorPos)
+{
+	this.name = name;
+	this.cursorPos = cursorPos;
+	this.dateCreated = DateTime.now();
+	this.dateSaved = this.dateCreated;
+}
+{
+	// constants
+
+	World.CursorSize = new Coords(10, 10);
+
+	// static methods
+
+	World.new = function()
+	{
+		var now = DateTime.now();
+		var nowAsString = now.toStringTimestamp();
+
+		var returnValue = new World
+		(
+			"World-" + nowAsString, 
+			new Coords(10, 10)
+		);
+		return returnValue;
+	}
+
+	// instance methods
+
+	World.prototype.draw = function()
+	{
+		var displayHelper = Globals.Instance.displayHelper;
+
+		displayHelper.clear();
+		displayHelper.drawRectangle
+		(
+			this.cursorPos,
+			World.CursorSize,
+			"Gray", "White"
+		);
+	}
+
+	World.prototype.updateForTimerTick = function()
+	{				
+		var inputHelper = Globals.Instance.inputHelper;
+		if (inputHelper.isMouseClicked == true)
+		{
+			inputHelper.isMouseClicked = false;
+			var mouseClickPos = inputHelper.mouseClickPos;
+			this.cursorPos.overwriteWith(mouseClickPos);
+			Globals.Instance.soundHelper.soundWithNamePlayAsEffect("Click");
+		}
+
+		if (inputHelper.keyCodePressed == 27) // escape
+		{
+			var universe = Globals.Instance.universe;
+			var venueNext = new VenueControls
+			(
+				ControlBuilder.configure()
+			);
+			venueNext = new VenueFader(venueNext);
+			universe.venueNext = venueNext;
+		}
+	}
+}
+
+// run
+
+main();
+
+</script>
+</body>
+</html>
