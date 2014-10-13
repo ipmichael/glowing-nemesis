@@ -435,8 +435,8 @@ function main()
 		(
 			"Default",
 			// panes
-			[
-				new Pane("Field_Other", new Coords(0, 0), new Coords(225, 150)),
+			[//coords... x and y?
+				new Pane("Field_Other", new Coords(00, 00), new Coords(225, 150)),
 				new Pane("Field_Player", new Coords(225, 0), new Coords(75, 150)),
 				new Pane("Status_Other", new Coords(0, 150), new Coords(100, 75)),
 				new Pane("Status_Player", new Coords(100, 150), new Coords(125, 75)),
