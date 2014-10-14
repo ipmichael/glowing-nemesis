@@ -10,7 +10,7 @@ body {
 }
 
 /* Titles */
-h1, h2, h3, h4, h5, h6 {
+h1{
   font-family: "Raleway"; /* OPTIONAL: Google Fonts - title font */
   font-weight: 300;
   color: #333;
@@ -44,7 +44,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .header h1 {
-  font-size: 60px;
+  font-size: 600px;
   color: white;
   background: rgba(0,0,0,0.2);
 }
