@@ -16,11 +16,11 @@ h1{
   color: #333;
 }
 
-.centered {
-    text-align: center;
-}
-.container .row p.tight {
-  margin-bottom: 10px;
+
+.container {
+  text-align: center;
+  background-position: center center;
+  background background-attachment: relative;
 }
 
 .header {
@@ -29,7 +29,7 @@ h1{
   text-align:center;
   background-attachment: relative;
   background-position: center center;
-  min-height: 30px;
+  min-height: 150px;
   width: 100%;
   
   -webkit-background-size: 100%;
@@ -47,4 +47,14 @@ h1{
   font-size: 60px;
   color: white;
   background: rgba(0,0,0,0.2);
+}
+
+.gamebox {
+	position: relative;
+	border-radius: 30px;
+	
+	margin: 0 10%;
+	height:98%;
+	width:80%;
+	background:#7183DB;
 }
