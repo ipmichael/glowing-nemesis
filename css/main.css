@@ -29,7 +29,7 @@ h1{
   text-align:center;
   background-attachment: relative;
   background-position: center center;
-  min-height: 150px;
+  /*min-height: 0px;*/
   width: 100%;
   
   -webkit-background-size: 100%;
@@ -46,7 +46,7 @@ h1{
 .header h1 {
   font-size: 60px;
   color: white;
-  background: rgba(0,0,0,0.2);
+  /*background: rgba(0,0,0,0.2);*/
 }
 
 .gamebox {
