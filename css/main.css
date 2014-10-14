@@ -16,11 +16,23 @@ h1{
   color: #333;
 }
 
+p {
+  line-height: 28px;
+  margin-bottom: 25px;
+}
 
 .container {
   text-align: center;
   background-position: center center;
   background background-attachment: relative;
+}
+
+.centered {
+   position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -50px;
+    margin-left: -50px;
 }
 
 .header {
