@@ -7,9 +7,19 @@ $(document).ready(function(){
         $(this).text('clicked');
     });
 
-    $('div#boot').hover(function(){
-    	$(this).css({'background-color': 'blue';});
-
+    $('div#boot').hover(function() {
+    	//set multiple CSS properties at once
+        $(this).css({
+            'background-color': 'blue',
+            'color': 'white'
+        });
+    }, function() {
+    	//set multiple CSS properties at once
+        $(this).css({
+            'background-color': '#1CBADC',
+            'color': 'white'
+        });
     });
+
 
 });
