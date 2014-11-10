@@ -1,3 +1,12 @@
+div#boot{
+  width: 200px;
+  height: 100px;
+  margin: 10px;
+  background-color: #1CBCAD;
+  color: white;
+  border: 2px solid black;
+}
+
 body {
   background-color: #f2f2f2;
   font-family: "Lato";
