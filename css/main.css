@@ -1,6 +1,6 @@
 div#boot{
-  width: 200px;
-  height: 100px;
+  width: 100px;
+  height: 40px;
   text-align: center;
   margin: 10px;
   background-color: #1CBCAD;
@@ -44,7 +44,7 @@ iframe { border: none; display: inline; width: 500px; height: 84px; }
     margin-left: auto;
     margin-right: auto;
     width: 70%;
-    
+
 }
 
 .header {
