@@ -8,6 +8,18 @@ div#boot{
   border: 2px solid black;
 }
 
+div#foodLabel{
+  width: 100px;
+  height: 40px;
+  text-align: center;
+  margin: 10px;
+  background-color: #1CBCAD;
+  color: white;
+  border: 2px solid black;
+}
+
+
+
 body {
   background-color: #f2f2f2;
   font-family: "Lato";

@@ -7,4 +7,10 @@ $(document).ready(function(){
         $(this).text('clicked');
     });
 
+    $('div#boot').hover(function()){
+    	$(this).css({
+            'background-color': 'blue',
+        });
+    }
+
 });
