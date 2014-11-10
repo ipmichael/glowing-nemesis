@@ -8,8 +8,8 @@ $(document).ready(function(){
     });
 
     $('div#boot').hover(function(){
-    	$(this).css({
-            'background-color': 'blue',
+    	$(this).css({'background-color': 'blue';});
+
     });
 
 });
