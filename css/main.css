@@ -1,6 +1,7 @@
 div#boot{
   width: 200px;
   height: 100px;
+  text-align: center;
   margin: 10px;
   background-color: #1CBCAD;
   color: white;
