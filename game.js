@@ -16,7 +16,7 @@ $(document).ready(function(){
     }, function() {
     	//set multiple CSS properties at once
         $(this).css({
-            'background-color': 'red',
+            'background-color': '#1CBADC',
             'color': 'white'
         });
     });
