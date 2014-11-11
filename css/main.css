@@ -52,11 +52,7 @@ p {
 canvas { display: block; margin: 0 auto; }
 iframe { border: none; display: inline; width: 500px; height: 84px; }
 
-.container {
-  text-align: center;
-  background-position: center center;
-  background background-attachment: relative;
-}
+
 
 .centered {
     margin-left: auto;
