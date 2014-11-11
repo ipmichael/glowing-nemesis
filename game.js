@@ -24,9 +24,9 @@ $(document).ready(function(){
     }
 
     if(canHarv){
-    	$('div#email').text("can harv");
+    	$('#email').text("can harv");
     }else{
-    	$('div#email').text("CANNOT harv");
+    	$('#email').text("CANNOT harv");
     }
 
     $('div#boot').hover(function() {
