@@ -3,8 +3,8 @@ $(document).ready(function(){
 	var aCount = 0;
 	var inc = 1;
 	var canHarv = true;
-	var leaderLvl = 3;
-	var moralLvl = 3;
+	var leaderLvl = 2;
+	var moralLvl = 2;
 	var miscTraits = "";
 
 	var leaderAry = [
