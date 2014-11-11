@@ -1,5 +1,4 @@
 $(document).ready(function(){
-	$('.progress-button').progressInitialize();
 
 	var aCount = 0;
 	var inc = 1;
@@ -10,7 +9,7 @@ $(document).ready(function(){
     	aCount+=inc;
         // $(this).text('clicked');
         $('#foodLabel').text("Food Gathered: " + aCount);
-    });f
+    });
 
     $('div#boot').hover(function() {
     	//set multiple CSS properties at once
