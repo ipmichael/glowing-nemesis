@@ -15,6 +15,8 @@ $(document).ready(function(){
         }
     });
 
+    $('#inc').text(" Inc: "+inc);
+
     function loadbar(){
     	canHarv = false;
     	$('div#tickbar').animate({width:'toggle'},5000);
@@ -22,12 +24,6 @@ $(document).ready(function(){
     		canHarv = true;
     	}, 5000);
     	
-    }
-
-    if(canHarv){
-    	$('#email').text("can harv");
-    }else{
-    	$('#email').text("CANNOT harv");
     }
 
     $('div#boot').hover(function() {
