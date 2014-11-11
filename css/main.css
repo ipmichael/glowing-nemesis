@@ -37,8 +37,8 @@ h1{
 }
 
 p {
-  line-height: 0px;
-  margin-bottom: 0px;
+  line-height: 3px;
+  margin-bottom: 3px;
 }
 
 canvas { display: block; margin: 0 auto; }
