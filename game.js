@@ -25,6 +25,6 @@ $(document).ready(function(){
     });
 
     $(function() {
-    $("#ticker").progressbar({value: tickVal});
+    $("#progressbar").progressbar({value: tickVal});
   	});
 });
