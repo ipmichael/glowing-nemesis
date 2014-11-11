@@ -2,7 +2,7 @@ $(document).ready(function(){
 
 	var aCount = 0;
 	var inc = 1;
-	var canHarv = false;
+	var canHarv = true;
 	// $('div#tickbar').hide();
 
 	$('div#boot').click(function(e) {
