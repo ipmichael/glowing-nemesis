@@ -6,26 +6,22 @@ $(document).ready(function(){
 	// $('div#tickbar').hide();
 
 	$('div#boot').click(function(e) {
-		var btn = $(this);
-    btn.prop('disabled',true);
-    window.setTimeout(function(){ 
-        btn.prop('disabled',false);
-    },5000);
-    
+		if(canHarv){
 			$('div#tickbar').hide();
 			canHarv = false;
-    		var oldText = $(this).text();
     		aCount+=inc;
-        	// $(this).text('clicked');
         	$('#foodLabel').text("Food Gathered: " + aCount);
         	loadbar();
-        
+        }
     });
 
     function loadbar(){
     	canHarv = false;
     	$('div#tickbar').animate({width:'toggle'},5000);
-    	canHarv = true;
+    	setTimeout(function(){
+    		canHarv = true;
+    	}, 5000);
+    	
     }
 
     if(canHarv){
