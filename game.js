@@ -3,6 +3,19 @@ $(document).ready(function(){
 	var aCount = 0;
 	var inc = 1;
 	var canHarv = true;
+	var leaderLvl = 3;
+	var moralLvl = 3;
+	var miscTraits = "";
+
+	var leaderAry = [
+		"Scum","Citizen","Leader","Chieftain","King","Overlord"
+	];
+	var moralAry = [
+		"Nefarious", "Evil", "", "Good", "Honorable"
+	];
+
+	$('#bigname').text(miscTraits+" "+moralAry[moralLvl]+" "+leaderAry[leaderLvl]);
+
 	// $('div#tickbar').hide();
 
 	$('div#boot').click(function(e) {
