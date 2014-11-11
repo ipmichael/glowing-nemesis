@@ -15,7 +15,7 @@ $(document).ready(function(){
         }
     });
 
-    $('#inc').text(" Inc: "+inc);
+    $('#inc').text(" Income: "+inc);
 
     function loadbar(){
     	canHarv = false;
