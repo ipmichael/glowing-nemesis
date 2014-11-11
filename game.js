@@ -1,6 +1,7 @@
 $(document).ready(function(){
 	var aCount = 0;
 	var inc = 1;
+	var tickVal = 37;
 
 	$('div#boot').click(function(e) {
     	var oldText = $(this).text();
@@ -23,4 +24,7 @@ $(document).ready(function(){
         });
     });
 
+    $(function() {
+    $( "#progressbar" ).progressbar({value: tickVal});
+  	});
 });
