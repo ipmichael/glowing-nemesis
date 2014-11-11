@@ -28,6 +28,7 @@ $(document).ready(function(){
     $("#progressbar").progressbar({value: tickVal});
   	});
 
+
   	//jQuery plugins for progress buttons
   	(function($){
 
