@@ -1,12 +1,13 @@
 $(document).ready(function(){
 	var aCount = 0;
+	var inc = 1;
 
 	$('div#boot').click(function(e) {
     	var oldText = $(this).text();
-    	aCount++;
+    	aCount+=inc;
         // $(this).text('clicked');
-        $('food').text(aCount);
-    });
+        $('#food').text(aCount);
+    });f
 
     $('div#boot').hover(function() {
     	//set multiple CSS properties at once
