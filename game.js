@@ -23,6 +23,12 @@ $(document).ready(function(){
     	canHarv = true;
     }
 
+    if(canHarv){
+    	$('div#email').text("can harv");
+    }else{
+    	$('div#email').text("CANNOT harv");
+    }
+
     $('div#boot').hover(function() {
     	//set multiple CSS properties at once
         $(this).css({
