@@ -12,6 +12,8 @@ div#boot{
 div#bigname{
   font-size: 40px;
   margin: 0 auto;
+  text-align: center;
+  font-weight: bold;
 }
 
 div#tickbar{
