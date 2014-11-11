@@ -6,7 +6,12 @@ $(document).ready(function(){
 	// $('div#tickbar').hide();
 
 	$('div#boot').click(function(e) {
-		if(canHarv){
+		var btn = $(this);
+    btn.prop('disabled',true);
+    window.setTimeout(function(){ 
+        btn.prop('disabled',false);
+    },5000);
+    
 			$('div#tickbar').hide();
 			canHarv = false;
     		var oldText = $(this).text();
@@ -14,11 +19,11 @@ $(document).ready(function(){
         	// $(this).text('clicked');
         	$('#foodLabel').text("Food Gathered: " + aCount);
         	loadbar();
-        }
+        
     });
 
     function loadbar(){
-    	//canHarv = false;
+    	canHarv = false;
     	$('div#tickbar').animate({width:'toggle'},5000);
     	canHarv = true;
     }
