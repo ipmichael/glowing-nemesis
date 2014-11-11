@@ -8,7 +8,7 @@ div#boot{
   border: 2px solid black;
 }
 
-div#foodLabel{
+/*div#foodLabel{
   width: 100px;
   height: 40px;
   text-align: center;
@@ -21,7 +21,7 @@ div#foodLabel{
 div#food{
   text-align: center;
 }
-
+*/
 
 body {
   background-color: #f2f2f2;
