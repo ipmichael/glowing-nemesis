@@ -1,4 +1,6 @@
 $(document).ready(function(){
+	$('.progress-button').progressInitialize();
+
 	var aCount = 0;
 	var inc = 1;
 	var tickVal = 37;
@@ -24,9 +26,10 @@ $(document).ready(function(){
         });
     });
 
-    $(function() {
-    $("#progressbar").progressbar({value: tickVal});
-  	});
+    $('#harvButton').click(function(e){
+    	e.preventDefault();
+    	$(this).progressTimed(.5);
+    })
 
 
   	//jQuery plugins for progress buttons
