@@ -18,6 +18,9 @@ div#foodLabel{
   border: 2px solid black;
 }
 
+div#food{
+  text-align: center;
+}
 
 
 body {

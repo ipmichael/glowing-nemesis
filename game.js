@@ -4,7 +4,7 @@ $(document).ready(function(){
 	$('div#boot').click(function(e) {
     	var oldText = $(this).text();
     	aCount++;
-        $(this).text('clicked');
+        // $(this).text('clicked');
     });
 
     $('div#boot').hover(function() {
@@ -21,5 +21,6 @@ $(document).ready(function(){
         });
     });
 
+    $('div#food').text(aCount);
 
 });
