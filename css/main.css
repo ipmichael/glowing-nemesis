@@ -80,13 +80,3 @@ iframe { border: none; display: inline; width: 500px; height: 84px; }
   color: white;
   /*background: rgba(0,0,0,0.2);*/
 }
-
-.gamebox {
-	position: relative;
-	border-radius: 30px;
-	padding-left: 100%;
-	margin: 0 10%;
-	height:98%;
-	width:80%;
-	background:#7183DB;
-}
