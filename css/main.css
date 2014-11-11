@@ -6,6 +6,7 @@ div#boot{
   background-color: #1CBADC;
   color: white;
   border: 2px solid black;
+  float: left;
 }
 
 /*div#foodLabel{
