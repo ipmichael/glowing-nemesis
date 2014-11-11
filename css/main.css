@@ -42,8 +42,8 @@ h1{
 }
 
 p {
-  line-height: 28px;
-  margin-bottom: 25px;
+  line-height: 0px;
+  margin-bottom: 0px;
 }
 
 canvas { display: block; margin: 0 auto; }
