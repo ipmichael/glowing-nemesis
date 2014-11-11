@@ -2,23 +2,25 @@ $(document).ready(function(){
 
 	var aCount = 0;
 	var inc = 1;
-	var tickVal = 0;
-	$('div#tickbar').hide();
+	var canHarv = false;
+	// $('div#tickbar').hide();
 
 	$('div#boot').click(function(e) {
-		$('div#tickbar').hide();
-    	var oldText = $(this).text();
-    	aCount+=inc;
-        // $(this).text('clicked');
-        $('#foodLabel').text("Food Gathered: " + aCount);
-        loadbar();
-        if(tickVal == 10){
-        	tickVal = 0;
+		if(canHarv){
+			$('div#tickbar').hide();
+			canHarv = false;
+    		var oldText = $(this).text();
+    		aCount+=inc;
+        	// $(this).text('clicked');
+        	$('#foodLabel').text("Food Gathered: " + aCount);
+        	loadbar();
         }
     });
 
     function loadbar(){
-    	$('div#tickbar').animate({width:'toggle'},4000);
+    	//canHarv = false;
+    	$('div#tickbar').animate({width:'toggle'},5000);
+    	canHarv = true;
     }
 
     $('div#boot').hover(function() {
