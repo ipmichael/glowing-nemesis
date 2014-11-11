@@ -9,20 +9,14 @@ div#boot{
   float: left;
 }
 
-/*div#foodLabel{
-  width: 100px;
-  height: 40px;
-  text-align: center;
-  margin: 10px;
-  background-color: #1CBCAD;
-  color: white;
-  border: 2px solid black;
+div#foodLabel{
+  
 }
 
 div#food{
-  text-align: center;
+  float: bottom;
 }
-*/
+
 .noselect {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
