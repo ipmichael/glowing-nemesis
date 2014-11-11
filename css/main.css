@@ -18,6 +18,10 @@ div#boot{
   border: 2px solid gray;
 }
 
+.toclick{
+  cursor: pointer;
+}
+
 .middle{
   margin: 0 auto;
 }
