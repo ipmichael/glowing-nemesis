@@ -10,6 +10,7 @@ div#boot{
 }
 
 div#tickbar{
+  margin-left: 3px;
   width: 225px;
   height: 20px;
   background-color: black;
