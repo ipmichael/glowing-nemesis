@@ -6,7 +6,7 @@ $(document).ready(function(){
     	var oldText = $(this).text();
     	aCount+=inc;
         // $(this).text('clicked');
-        $('#food').text(aCount);
+        $('#foodLabel').text("Food Gathered: " + aCount);
     });f
 
     $('div#boot').hover(function() {
