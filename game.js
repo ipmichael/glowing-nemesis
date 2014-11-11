@@ -18,7 +18,7 @@ $(document).ready(function(){
     });
 
     function loadbar(){
-    	$('div#tickbar').animate({width:'toggle'},350);
+    	$('div#tickbar').animate({width:'toggle'},3500);
     }
 
     $('div#boot').hover(function() {
