@@ -29,7 +29,7 @@ $(document).ready(function(){
     $('#harvButton').click(function(e){
     	e.preventDefault();
     	$(this).progressTimed(.5);
-    })
+    });
 
 
   	//jQuery plugins for progress buttons
