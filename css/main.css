@@ -9,6 +9,10 @@ div#boot{
   /*float: left;*/
 }
 
+.middle{
+  margin: 0 auto;
+}
+
 .noselect {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
