@@ -8,6 +8,7 @@ $(document).ready(function(){
 	var moralLvl = 2;
 	var miscTraits = "";
 
+    var workerCount = 0;
     var farmerCount = 0;
 
     //will be 5000, but shortened for testing
@@ -48,6 +49,8 @@ $(document).ready(function(){
         $('#farmers').text(" Farmers: "+farmerCount);
         //increase amount
         $('#inc').text(" Income: "+inc);
+        //worker count
+        $('#workers').text(" Workers: "+workerCount);
     }
 
     function loadbar(){
