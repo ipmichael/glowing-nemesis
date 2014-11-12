@@ -7,6 +7,8 @@ $(document).ready(function(){
 	var moralLvl = 2;
 	var miscTraits = "";
 
+    var growTime = 5000;
+
 	var leaderAry = [
 		"Scum","Citizen","Chieftain","King","Overlord"
 	];
@@ -32,10 +34,10 @@ $(document).ready(function(){
 
     function loadbar(){
     	canHarv = false;
-    	$('div#tickbar').animate({width:'toggle'},5000);
+    	$('div#tickbar').animate({width:'toggle'},growTime);
     	setTimeout(function(){
     		canHarv = true;
-    	}, 5000);
+    	}, growTime);
     	
     }
 
