@@ -76,6 +76,21 @@ $(document).ready(function(){
         updateVals();
     });
 
+    $('div#up2').click(function(e){
+        if(aCount>0){
+            workerCount++;
+            aCount--;
+        }
+        updateVals();
+    });
+    $('div#down2').click(function(e){
+        if(workerCount>0){
+            workerCount--;
+            aCount++;
+        }
+        updateVals();
+    });
+
     $('div#boot').hover(function() {
     	//set multiple CSS properties at once
         $(this).css({
