@@ -1,7 +1,7 @@
 $(document).ready(function(){
 
 	var aCount = 0;
-	var inc = 1;
+	var inc = Math.ceil(aCount/10);
 	var canHarv = true;
 	var leaderLvl = 2;
 	var moralLvl = 2;
