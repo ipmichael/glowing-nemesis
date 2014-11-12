@@ -8,7 +8,7 @@ $(document).ready(function(){
 	var miscTraits = "";
 
 	var leaderAry = [
-		"Scum","Citizen","Leader","Chieftain","King","Overlord"
+		"Scum","Citizen","Chieftain","King","Overlord"
 	];
 	var moralAry = [
 		"Nefarious", "Evil", "", "Good", "Honorable"
