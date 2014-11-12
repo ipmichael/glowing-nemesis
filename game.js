@@ -7,7 +7,10 @@ $(document).ready(function(){
 	var moralLvl = 2;
 	var miscTraits = "";
 
-    var growTime = 5000;
+    var farmerCount = 0;
+
+    //will be 5000, but shortened for testing
+    var growTime = 250;
 
 	var leaderAry = [
 		"Scum","Citizen","Chieftain","King","Overlord"
@@ -16,16 +19,21 @@ $(document).ready(function(){
 		"Nefarious", "Evil", "", "Good", "Honorable"
 	];
 
+    //constantly updated section!
+    //player name
 	$('#bigname').text(miscTraits+" "+moralAry[moralLvl]+" "+leaderAry[leaderLvl]);
+    //farmer count
+    $('#farmers').text(" Farmers: "+farmerCount);
+	
 
-	// $('div#tickbar').hide();
-
+    //boot is the grow button
+    //on click, starts loading cooldown bar and also increments villager amount
 	$('div#boot').click(function(e) {
 		if(canHarv){
 			$('div#tickbar').hide();
 			canHarv = false;
     		aCount+=inc;
-        	$('#foodLabel').text("Food Gathered: " + aCount);
+        	$('#foodLabel').text("Villagers: " + aCount);
         	loadbar();
         }
     });
@@ -40,6 +48,19 @@ $(document).ready(function(){
     	}, growTime);
     	
     }
+
+    $('div#up1').click(function(e){
+        if(aCount>0){
+            farmerCount++;
+            aCount--;
+        }
+    });
+    $('div#down1').click(function(e){
+        if(farmerCount>0){
+            farmerCount--;
+            aCount++;
+        }
+    });
 
     $('div#boot').hover(function() {
     	//set multiple CSS properties at once
