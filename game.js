@@ -1,7 +1,7 @@
 $(document).ready(function(){
 
 	var aCount = 0;
-	var inc = Math.ceil(aCount/10) || 1;
+	var inc = 1;
 	var canHarv = true;
 	var leaderLvl = 2;
 	var moralLvl = 2;
@@ -19,13 +19,6 @@ $(document).ready(function(){
 		"Nefarious", "Evil", "", "Good", "Honorable"
 	];
 
-    //constantly updated section!
-    //player name
-	$('#bigname').text(miscTraits+" "+moralAry[moralLvl]+" "+leaderAry[leaderLvl]);
-    //farmer count
-    $('#farmers').text(" Farmers: "+farmerCount);
-	
-
     //boot is the grow button
     //on click, starts loading cooldown bar and also increments villager amount
 	$('div#boot').click(function(e) {
@@ -36,17 +29,30 @@ $(document).ready(function(){
         	$('#foodLabel').text("Villagers: " + aCount);
         	loadbar();
         }
+
+        inc = Math.ceil(aCount/10) || 1;
+
+        updateVals();
     });
 
-    $('#inc').text(" Income: "+inc);
+    function updateVals(){
+        //updated onclick section!
+        //villager count
+        $('#foodLabel').text("Villagers: " + aCount);
+        //player name
+        $('#bigname').text(miscTraits+" "+moralAry[moralLvl]+" "+leaderAry[leaderLvl]);
+        //farmer count
+        $('#farmers').text(" Farmers: "+farmerCount);
+        //increase amount
+        $('#inc').text(" Income: "+inc);
+    }
 
     function loadbar(){
     	canHarv = false;
     	$('div#tickbar').animate({width:'toggle'},growTime);
     	setTimeout(function(){
     		canHarv = true;
-    	}, growTime);
-    	
+    	}, growTime);	
     }
 
     $('div#up1').click(function(e){
@@ -54,12 +60,14 @@ $(document).ready(function(){
             farmerCount++;
             aCount--;
         }
+        updateVals();
     });
     $('div#down1').click(function(e){
         if(farmerCount>0){
             farmerCount--;
             aCount++;
         }
+        updateVals();
     });
 
     $('div#boot').hover(function() {
