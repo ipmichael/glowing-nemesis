@@ -1,5 +1,6 @@
 $(document).ready(function(){
 
+
 	var aCount = 0;
 	var inc = 1;
 	var canHarv = true;
@@ -18,6 +19,8 @@ $(document).ready(function(){
 	var moralAry = [
 		"Nefarious", "Evil", "", "Good", "Honorable"
 	];
+
+    updateVals();
 
     //boot is the grow button
     //on click, starts loading cooldown bar and also increments villager amount
