@@ -11,9 +11,9 @@ div#boot{
 }
 
 div#bigname{
-  font-size: 70%;
-  margin: 0 auto;
-  text-align: center;
+  font-size: 120%;
+/*  margin: 0 auto;
+  text-align: center;*/
   font-weight: bold;
 }
 
