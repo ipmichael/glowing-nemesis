@@ -17,8 +17,8 @@ div#bigname{
 }
 
 div#tickbar{
-  margin-left: 3px;
-  width: 210px;
+  margin-left: 5%;
+  width: 190px;
   height: 20px;
   background-color: black;
 }
@@ -27,37 +27,6 @@ div#tickbox{
   width: 10px;
   height: 10px;
   background-color: black;
-}
-
-.tick1{
-  left: 0;
-}
-.tick2{
-  left: 10px;
-}
-.tick3{
-  left: 20px;
-}
-.tick4{
-  left: 30px;
-}
-.tick5{
-  left: 40px;
-}
-.tick6{
-  left: 50px;
-}
-.tick7{
-  left: 60px;
-}
-.tick8{
-  left: 70px;
-}
-.tick9{
-  left: 80px;
-}
-.tick10{
-  left: 90px;
 }
 
 .updown{
