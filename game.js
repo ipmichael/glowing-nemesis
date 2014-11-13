@@ -1,6 +1,5 @@
 $(document).ready(function(){
 
-
 	var aCount = 0;
 	var inc = 1;
 	var canHarv = true;
@@ -10,6 +9,7 @@ $(document).ready(function(){
 
     var workerCount = 0;
     var farmerCount = 0;
+    var warriorCount = 0;
 
     //will be 5000, but shortened for testing
     var growTime = 250;
@@ -39,19 +39,7 @@ $(document).ready(function(){
         updateVals();
     });
 
-    function updateVals(){
-        //updated onclick section!
-        //villager count
-        $('#foodLabel').text("Villagers: " + aCount);
-        //player name
-        $('#bigname').text(miscTraits+" "+moralAry[moralLvl]+" "+leaderAry[leaderLvl]);
-        //farmer count
-        $('#farmers').text(" Farmers: "+farmerCount);
-        //increase amount
-        $('#inc').text(" Income: "+inc);
-        //worker count
-        $('#workers').text(" Workers: "+workerCount);
-    }
+
 
     function loadbar(){
     	canHarv = false;
@@ -60,6 +48,9 @@ $(document).ready(function(){
     		canHarv = true;
     	}, growTime);	
     }
+    /*========================
+    UPDOWN BUTTON INCREMENTERS
+    ==========================*/
 
     $('div#up1').click(function(e){
         if(aCount>0){
@@ -91,6 +82,21 @@ $(document).ready(function(){
         updateVals();
     });
 
+    $('div#up3').click(function(e){
+        if(aCount>0){
+            warriorCount++;
+            aCount--;
+        }
+        updateVals();
+    });
+    $('div#down3').click(function(e){
+        if(warriorCount>0){
+            warriorCount--;
+            aCount++;
+        }
+        updateVals();
+    });
+
     $('div#boot').hover(function() {
     	//set multiple CSS properties at once
         $(this).css({
@@ -104,4 +110,20 @@ $(document).ready(function(){
             'color': 'white'
         });
     });
+
+    function updateVals(){
+        //updated onclick section!
+        //villager count
+        $('#foodLabel').text("Villagers: " + aCount);
+        //player name
+        $('#bigname').text(miscTraits+" "+moralAry[moralLvl]+" "+leaderAry[leaderLvl]);
+        //farmer count
+        $('#farmers').text(" Farmers: "+farmerCount);
+        //increase amount
+        $('#inc').text(" Income: "+inc);
+        //worker count
+        $('#workers').text(" Laborers: "+workerCount);
+        //warrior count
+        $('#warriors').text(" Warriors: "+warriorCount);
+    }
 });
