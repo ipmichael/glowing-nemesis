@@ -141,8 +141,8 @@ $(document).ready(function(){
         $('#bigname').text(miscTrait1+miscTrait2+miscTrait3+moralAry[moralLvl]+" "+leaderAry[leaderLvl]);
         //farmer count
         $('#farmers').text(" Farmers: "+farmerCount);
-        //increase amount
-        $('#inc').text(" Income: "+inc);
+        //debug
+        $('#inc').text(" trueCount: "+trueCount);
         //worker count
         $('#workers').text(" Laborers: "+workerCount);
         //warrior count
