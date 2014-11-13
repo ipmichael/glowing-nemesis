@@ -8,7 +8,9 @@ $(document).ready(function(){
 	var canHarv = true;
 	var leaderLvl = 2;
 	var moralLvl = 2;
-	var miscTraits = "";
+	var miscTrait1 = "";
+    var miscTrait2 = "";
+    var miscTrait3 = "";
 
     var workerCount = 0;
     var farmerCount = 0;
@@ -104,13 +106,13 @@ $(document).ready(function(){
     $('div#boot').hover(function() {
     	//set multiple CSS properties at once
         $(this).css({
-            'background-color': 'blue',
+            'background-color': 'gray',
             'color': 'white'
         });
     }, function() {
     	//set multiple CSS properties at once
         $(this).css({
-            'background-color': '#1CBADC',
+            'background-color': 'black',
             'color': 'white'
         });
     });
@@ -120,7 +122,7 @@ $(document).ready(function(){
         //villager count
         $('#foodLabel').text("Villagers: " + aCount);
         //player name
-        $('#bigname').text(miscTraits+" "+moralAry[moralLvl]+" "+leaderAry[leaderLvl]);
+        $('#bigname').text(miscTrait1+miscTrait2+miscTrait3+moralAry[moralLvl]+" "+leaderAry[leaderLvl]);
         //farmer count
         $('#farmers').text(" Farmers: "+farmerCount);
         //increase amount
@@ -129,5 +131,23 @@ $(document).ready(function(){
         $('#workers').text(" Laborers: "+workerCount);
         //warrior count
         $('#warriors').text(" Warriors: "+warriorCount);
+
+        //miscTrait1 has to do with number of clicks,
+        //overall experience/how long you've been playing
+        if(0<=trueCount<7){
+            miscTrait1="Amateur ";
+        }else if(trueCount<14){
+            miscTrait1="Young ";
+        }else if(trueCount<23){
+            miscTrait1="Capable ";
+        }else if(trueCount<32){
+            miscTrait1="Experienced ";
+        }else if(trueCount<40){
+            miscTrait1="Seasoned ";
+        }else{
+            miscTrait1="Veteran ";
+        }
+
+        
     }
 });
