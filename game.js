@@ -1,6 +1,9 @@
 $(document).ready(function(){
 
+    //aCount is the number of villagers
 	var aCount = 0;
+    //trueCount is number of clicks
+    var trueCount = 0;
 	var inc = 1;
 	var canHarv = true;
 	var leaderLvl = 2;
@@ -29,6 +32,7 @@ $(document).ready(function(){
 		if(canHarv){
 			$('div#tickbar').hide();
 			canHarv = false;
+            trueCount++;
     		aCount+=inc;
         	$('#foodLabel').text("Villagers: " + aCount);
         	loadbar();
