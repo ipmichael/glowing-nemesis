@@ -121,7 +121,7 @@ $(document).ready(function(){
 
         //miscTrait1 has to do with number of clicks,
         //overall experience/how long you've been playing
-        if(0<=trueCount<7){
+        if(trueCount<7){
             miscTrait1="Amateur ";
         }else if(trueCount<14){
             miscTrait1="Young ";
