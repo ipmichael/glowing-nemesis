@@ -118,19 +118,6 @@ $(document).ready(function(){
     });
 
     function updateVals(){
-        //updated onclick section!
-        //villager count
-        $('#foodLabel').text("Villagers: " + aCount);
-        //player name
-        $('#bigname').text(miscTrait1+miscTrait2+miscTrait3+moralAry[moralLvl]+" "+leaderAry[leaderLvl]);
-        //farmer count
-        $('#farmers').text(" Farmers: "+farmerCount);
-        //increase amount
-        $('#inc').text(" Income: "+inc);
-        //worker count
-        $('#workers').text(" Laborers: "+workerCount);
-        //warrior count
-        $('#warriors').text(" Warriors: "+warriorCount);
 
         //miscTrait1 has to do with number of clicks,
         //overall experience/how long you've been playing
@@ -147,7 +134,18 @@ $(document).ready(function(){
         }else{
             miscTrait1="Veteran ";
         }
-
-        
+        //updated onclick section!
+        //villager count
+        $('#foodLabel').text("Villagers: " + aCount);
+        //player name
+        $('#bigname').text(miscTrait1+miscTrait2+miscTrait3+moralAry[moralLvl]+" "+leaderAry[leaderLvl]);
+        //farmer count
+        $('#farmers').text(" Farmers: "+farmerCount);
+        //increase amount
+        $('#inc').text(" Income: "+inc);
+        //worker count
+        $('#workers').text(" Laborers: "+workerCount);
+        //warrior count
+        $('#warriors').text(" Warriors: "+warriorCount);
     }
 });
