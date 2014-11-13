@@ -127,9 +127,9 @@ $(document).ready(function(){
             miscTrait1="Young ";
         }else if(trueCount<23){
             miscTrait1="Capable ";
-        }else if(trueCount<32){
+        }else if(trueCount<33){
             miscTrait1="Experienced ";
-        }else if(trueCount<40){
+        }else if(trueCount<45){
             miscTrait1="Seasoned ";
         }else{
             miscTrait1="Veteran ";
