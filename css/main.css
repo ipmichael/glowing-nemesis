@@ -1,11 +1,26 @@
-div#boot{
-  width: 100px;
-  height: 40px;
+div#choice1{
+
+}
+div#choice2{
+
+}
+div#choice3{
+
+}
+
+div#story{
+  font-size: 30px;
+  font-family: 'Raleway', sans-serif;
+}
+
+.choiceBox{
+  width: 30px;
+  height: 30px;
   text-align: center;
   margin: 0 auto;
   /*background-color: #1CBADC;*/
-  background-color: black;
-  color: white;
+  background-color: gray;
+  color: black;
 /*  border: 2px solid black;*/
   /*float: left;*/
 }
@@ -131,7 +146,7 @@ div#tickbox{
 
 body {
   background-color: #f2f2f2;
-  font-family: "Lato";
+  font-family: "Lato", sans-serif;
   font-weight: 300;
   font-size: 16px;
   color: #555;
@@ -155,7 +170,25 @@ p {
 canvas { display: block; margin: 0 auto; }
 iframe { border: none; display: inline; width: 500px; height: 84px; }
 
+.textleft{
+  text-align: left;
+}
 
+.stickLeft{
+  margin-right: 10%;
+}
+
+.stickRight{
+  margin-left: 50%;
+}
+
+.textright{
+  text-align: right;
+}
+
+.textcenter{
+  text-align: center;
+}
 
 .centered {
     margin-left: auto;
