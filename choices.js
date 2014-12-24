@@ -20,8 +20,8 @@ $(document).ready(function(){
     });
 
     function update(){
-    	$('div#choice1').text(""+choice1);
-    	$('div#choice2').text(""+choice2);
-    	$('div#choice3').text(""+choice3);
+    	$('#choice1').text(""+choice1);
+    	$('#choice2').text(""+choice2);
+    	$('#choice3').text(""+choice3);
     }
 });
