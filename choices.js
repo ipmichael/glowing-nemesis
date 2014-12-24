@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	var storyAry = [];
+	
 	var choice1 = 0;
 	var choice2 = 0;
 	var choice3 = 0;
